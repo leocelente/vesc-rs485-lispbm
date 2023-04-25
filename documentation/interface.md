@@ -17,7 +17,7 @@ All commands return a *response* terminated by a carriage-return and newline (\\
 ```
 <response>\r\n
 ```
-Upper/lower case is irrelevant.
+Upper/lower case is irrelevant. In case a command (\\n), does not match any on the list a error *response* will be returned `CMD_NOT_FOUND`.
 
 ### Limitations
 Preliminary tests have encountered problems running the board on the extremes of the possible range of control.

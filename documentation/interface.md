@@ -33,6 +33,7 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
     <summary>
         duty 
     </summary>
+
 - Usage: `duty <setpoint> <rate>`
 - Ramps up/down the motor duty cycle at rate %/s
 - Response: Expected time to setpoint in seconds
@@ -61,7 +62,7 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
 </details>
 
 ### Temperature
-<details>
+<details open>
     <summary>
         Temperature Sensors
     </summary>

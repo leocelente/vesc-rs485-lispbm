@@ -31,11 +31,11 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
 ### Duty Cycle Control
 <details open>
     <summary>
-        duty 
+        Set Duty Cycle with Ramp 
     </summary>
 
 - Usage: `duty <setpoint> <rate>`
-- Ramps up/down the motor duty cycle at rate %/s
+- Ramps up/down the motor duty cycle at rate %/s with a timestep of 5 milliseconds.
 - Response: Expected time to setpoint in seconds
 - Example: `duty 0.3 0.6` returns `0.500`
 </details>
@@ -43,7 +43,7 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
 ### Encoder
 <details open>
     <summary>
-        Encoder Count
+        Read Encoder Count
     </summary>
 
 - Usage: `encoder`
@@ -64,7 +64,7 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
 ### Temperature
 <details open>
     <summary>
-        Temperature Sensors
+        Read Temperature Sensors
     </summary>
 
 - Usage: `temp`
@@ -73,7 +73,7 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
 
 <details>
     <summary>
-        Motor Temperature Sensor
+        Read Motor Temperature Sensor
     </summary>
 
 - Usage: `temp_motor`
@@ -82,7 +82,7 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
 
 <details>
     <summary>
-        MOSFET Temperature Sensor
+        Read MOSFET Temperature Sensor
     </summary>
 
 - Usage: `temp_mosfet`
@@ -92,13 +92,13 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
 ### RPM Speed Control
 <details>
     <summary>
-        RPM Speed 
+        Set RPM Speed 
     </summary>
 
 - Usage: `rpm <setpoint> <rate>`
 - Alternative: `speed <setpoint> <rate>`
-- Ramps up/down the motor duty cycle at rate rad/s^2
+- Ramps up/down the motor duty cycle at rate rad/s^2 with a timestep of 5 milliseconds.
 - Response: Expected time to setpoint in seconds
-- Note that the RPM Control loop is also subject to a limited usable range 
+- NOTE: The RPM Control loop is also subject to a limited usable range 
      and throughout testing it was less than the duty cycle control. So **this interface is not recommended**
 </details>

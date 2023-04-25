@@ -8,12 +8,12 @@ This interface is intended, and only compatible with, the custom 410_LACEP revis
 The interface consists of an RS485 physical layer, using one differential pair. The data is transferred on a half-duplex serial UART running at **115200 baud**. 
 
 ### Command Structure
-Each command consists of a *command_name* and an optional sequence of *args* separated by *whitespace* and terminated with a *newline* (\n). 
+Each command consists of a *command_name* and an optional sequence of *args* separated by *whitespace* and terminated with a *newline* (\\n). 
 
 ```
 <command_name> <args>\n
 ```
-All commands return a *response* terminated by a carriage-return and newline (\r\n).
+All commands return a *response* terminated by a carriage-return and newline (\\r\\n).
 ```
 <response>\r\n
 ```
@@ -45,9 +45,9 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
         Encoder Count
     </summary>
 
-    - Usage: `encoder`
-    - Gets current encoder position in degrees
-    - Response: `216.40`
+- Usage: `encoder`
+- Gets current encoder position in degrees
+- Response: `216.40`
 </details>
 
 <details open>
@@ -55,9 +55,9 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
         Reset Encoder Count
     </summary>
 
-    - Usage: `reset_encoder`
-    - Rests current encoder count.
-    - Response: `0`
+- Usage: `reset_encoder`
+- Rests current encoder count.
+- Response: `0`
 </details>
 
 ### Temperature
@@ -66,8 +66,8 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
         Temperature Sensors
     </summary>
 
-    - Usage: `temp`
-    - Returns current temperature of motor and MOSFET in degree Celsius, separated by a comma.
+- Usage: `temp`
+- Returns current temperature of motor and MOSFET in degree Celsius, separated by a comma.
 </details>
 
 <details>
@@ -75,8 +75,8 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
         Motor Temperature Sensor
     </summary>
 
-    - Usage: `temp_motor`
-    - Returns only the motor temperature in degree Celsius.
+- Usage: `temp_motor`
+- Returns only the motor temperature in degree Celsius.
 </details>
 
 <details>
@@ -84,8 +84,8 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
         MOSFET Temperature Sensor
     </summary>
 
-    - Usage: `temp_mosfet`
-    - Returns only the MOSFET temperature in degree Celsius.
+- Usage: `temp_mosfet`
+- Returns only the MOSFET temperature in degree Celsius.
 </details>
 
 ### RPM Speed Control
@@ -94,9 +94,10 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
         RPM Speed 
     </summary>
 
-    - Usage: `rpm <setpoint> <rate>`
-    - Alternative: `speed <setpoint> <rate>`
-    - Ramps up/down the motor duty cycle at rate rad/s^2
-    - Response: Expected time to setpoint in seconds
-    - Note that the RPM Control loop is also subject to a limited usable range and throughout testing it was less than the duty cycle control. So **this interface is not recommended**
+- Usage: `rpm <setpoint> <rate>`
+- Alternative: `speed <setpoint> <rate>`
+- Ramps up/down the motor duty cycle at rate rad/s^2
+- Response: Expected time to setpoint in seconds
+- Note that the RPM Control loop is also subject to a limited usable range 
+     and throughout testing it was less than the duty cycle control. So **this interface is not recommended**
 </details>

@@ -4,3 +4,5 @@ lispBM/repl/Makefile:
 repl: lispBM/repl/Makefile
 	make -C lispBM/repl all64
 
+doc:
+	make -C documentation/

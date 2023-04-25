@@ -65,7 +65,7 @@
             (i-steps (to-i n-steps))
          )
         (progn 
-            (rs485-write (str-merge "ETA:" (str-from-n (* i-steps dt) "%.3f") "\r\n"))  
+            (rs485-write (str-from-n (* i-steps dt) "%.3f"))  
             (update-rpm 0 i-steps (to-rpm d-omega))
             (set-rpm (to-rpm omega)); correct quantization errors
         )
@@ -98,7 +98,7 @@
         (i-steps (to-i n-steps))
     ) 
     (progn
-        (rs485-write (str-merge "ETA:" (str-from-n (* i-steps dt) "%.3f") "\r\n"))  
+        (rs485-write (str-from-n (* i-steps dt) "%2.3f"))  
         (update-duty-cycle 0 i-steps d-dc)
         (set-duty setpoint)
     )
@@ -113,7 +113,7 @@
 (defun cmd-speed (args) 
     (progn 
         (set-omega (first args) (first (rest args)))
-        (rs485-write (str-merge "Setting speed to:" (str-from-n (first args) "%.3f") " rad/s\r\n"))
+        (rs485-write (str-from-n (first args) "%2.3f\r\n"))
 ))
 
 ;; Sets speed gradually to <rpm> in RPM at angular acceleration <alpha> in rad/s2 
@@ -121,14 +121,14 @@
 (defun cmd-rpm (args) 
     (progn 
         (my-set-rpm (first args) (first (rest args)))
-        (rs485-write (str-merge "Setting speed to:" (str-from-n (first args) "%.3f")  " RPM\r\n"))
+        (rs485-write (str-from-n (first args) "%2.3f\r\n"))
 ))
 
 ;; Returns current encoder position in degrees
 ;; (cmd-encoder )
 (defun cmd-encoder (args) 
     (progn 
-        (rs485-write (str-merge "Encoder:" (str-from-n (get-encoder) "%.3f") " deg\r\n"))
+        (rs485-write (str-from-n (get-encoder) "%2.3f\r\n"))
 ))
 
 (defun cmd-reset-encoder (args) 

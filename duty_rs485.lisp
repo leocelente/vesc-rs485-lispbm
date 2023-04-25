@@ -75,7 +75,7 @@
 (defun update-duty-cycle (i steps increment) 
     (cond ( (< i steps)
             (progn 
-                (set-duty (+ (get-duty) increment)) 
+                (set-duty (+ (get-duty) increment))
                 (yield delay)
                 (update-duty-cycle (+ i 1) steps increment)
             )
@@ -134,13 +134,27 @@
 (defun cmd-reset-encoder (args) 
     (progn
         (set-encoder 0)
-        (rs485-write "Encoder Reset\r\n")
+        (rs485-write (str-from-n (get-encoder) "%2.3f\r\n"))
+    )
+)
+
+(defun cmd-temp-motor (args)
+    (rs485-write (str-from-n (get-temp-mot) "%2.3f\r\n"))
+)
+
+(defun cmd-temp-mosfet (args)
+    (rs485-write (str-from-n (get-temp-fet) "%2.3f\r\n"))
+)
+
+(defun cmd-temp (args)
+    (progn 
+        (rs485-write (str-merge (str-from-n (get-temp-mot) "%2.3f") "," (str-from-n (get-temp-fet) "%2.3f\r\n") ))
     )
 )
 
 (defun process (buffer) 
     (let (  (tokens (str-split buffer " ")) 
-            (cmd (first tokens)) 
+            (cmd (str-to-lower (first tokens))) 
             (args (map read (rest tokens)))
         )
         (cond 
@@ -149,6 +163,9 @@
             ((= 0 (str-cmp cmd "duty")) (cmd-duty args))
             ((= 0 (str-cmp cmd "encoder")) (cmd-encoder args))
             ((= 0 (str-cmp cmd "reset_encoder")) (cmd-reset-encoder args))
+            ((= 0 (str-cmp cmd "temp_motor")) (cmd-temp-motor args))
+            ((= 0 (str-cmp cmd "temp_mosfet")) (cmd-temp-mosfet args))
+            ((= 0 (str-cmp cmd "temp")) (cmd-temp args))
             (t (rs485-write "CMD_NOT_FOUND\r\n"))
         ) 
     )
@@ -178,4 +195,6 @@
     )
 )
 
+(yield 10000) ; wait 10ms
+(set-duty 0)
 (run)

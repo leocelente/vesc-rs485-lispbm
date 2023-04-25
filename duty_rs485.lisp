@@ -18,7 +18,7 @@
 ;; Smallest timestep 
 (define dt 0.005)
 ;; Microsecond delay between steps
-(define delay (to-i (* dt 1000)))
+(define delay (to-i (* dt 1000000)))
 
 ;; UART Byte time
 (define uart-byte-time (/ (* (+ 1 8 1) 1000000) 115200))

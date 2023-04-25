@@ -33,11 +33,10 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
     <summary>
         duty 
     </summary>
-
-    - Usage: `duty <setpoint> <rate>`
-    - Ramps up/down the motor duty cycle at rate %/s
-    - Response: Expected time to setpoint in seconds
-    - Example: `duty 0.3 0.6` returns `0.500`
+- Usage: `duty <setpoint> <rate>`
+- Ramps up/down the motor duty cycle at rate %/s
+- Response: Expected time to setpoint in seconds
+- Example: `duty 0.3 0.6` returns `0.500`
 </details>
 
 ### Encoder

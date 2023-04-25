@@ -6,6 +6,8 @@ This depends directly on the 410_LACEP board, available at [jordeam/vedderb_bldc
 
 A binary containing the firmware with configurations and this RS485 interface is available [here](https://github.com/leocelente/bldc/releases/tag/BASE_SENT_TO_TESTING)
 
+Checkout the Command List and Documentation [here](documentation/)
+
 # PC testing
 To test on a PC, build the [original LispBM project](https://github.com/svenssonjoel/lispBM). Use the Makefile provided, that should be quicker.
 Then comment out the `(run)` call on the end of the file. This is necessary as we are not mocking the `uart-read-until` procedure, so it won't run. 

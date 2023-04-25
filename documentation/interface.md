@@ -29,71 +29,44 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
 
 ## Command List
 ### Duty Cycle Control
-<details open>
-    <summary>
-        Set Duty Cycle with Ramp 
-    </summary>
+#### Set Duty Cycle with Ramp 
 
 - Usage: `duty <setpoint> <rate>`
 - Ramps up/down the motor duty cycle at rate %/s with a timestep of 5 milliseconds.
 - Response: Expected time to setpoint in seconds
 - Example: `duty 0.3 0.6` returns `0.500`
-</details>
 
 ### Encoder
-<details open>
-    <summary>
-        Read Encoder Count
-    </summary>
+#### Read Encoder Count
 
 - Usage: `encoder`
 - Gets current encoder position in degrees
 - Response: `216.40`
-</details>
 
-<details open>
-    <summary>
-        Reset Encoder Count
-    </summary>
+#### Reset Encoder Count
 
 - Usage: `reset_encoder`
 - Rests current encoder count.
 - Response: `0`
-</details>
 
 ### Temperature
-<details open>
-    <summary>
-        Read Temperature Sensors
-    </summary>
+#### Read Temperature Sensors
 
 - Usage: `temp`
 - Returns current temperature of motor and MOSFET in degree Celsius, separated by a comma.
-</details>
 
-<details>
-    <summary>
-        Read Motor Temperature Sensor
-    </summary>
+#### Read Motor Temperature Sensor
 
 - Usage: `temp_motor`
 - Returns only the motor temperature in degree Celsius.
-</details>
 
-<details>
-    <summary>
-        Read MOSFET Temperature Sensor
-    </summary>
+#### Read MOSFET Temperature Sensor
 
 - Usage: `temp_mosfet`
 - Returns only the MOSFET temperature in degree Celsius.
-</details>
 
 ### RPM Speed Control
-<details>
-    <summary>
-        Set RPM Speed 
-    </summary>
+#### Set RPM Speed 
 
 - Usage: `rpm <setpoint> <rate>`
 - Alternative: `speed <setpoint> <rate>`
@@ -101,4 +74,3 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
 - Response: Expected time to setpoint in seconds
 - NOTE: The RPM Control loop is also subject to a limited usable range 
      and throughout testing it was less than the duty cycle control. So **this interface is not recommended**
-</details>

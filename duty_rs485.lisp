@@ -65,7 +65,7 @@
             (i-steps (to-i n-steps))
          )
         (progn 
-            (rs485-write (str-from-n (* i-steps dt) "%.3f"))  
+            (rs485-write (str-from-n (* i-steps dt) (str-merge rs485-id  " %2.3f\n")))  
             (update-rpm 0 i-steps (to-rpm d-omega))
             (set-rpm (to-rpm omega)); correct quantization errors
         )
@@ -88,8 +88,9 @@
 ;; (cmd-duty <setpoint> <alpha>)
 (defun cmd-duty (args) 
    (let (
-        (setpoint (first args))
-        (alpha (first (rest args)))
+        (setpoint (str-to-f (first args)))
+        (alpha (str-to-f (first (rest args))))
+        (alpha 0.3)
         (current-dc (get-duty))
         (delta-dc (- setpoint current-dc))
         (delta-t (abs (/ delta-dc alpha)))
@@ -98,7 +99,8 @@
         (i-steps (to-i n-steps))
     ) 
     (progn
-        (rs485-write (str-from-n (* i-steps dt) "%2.3f"))  
+        (print args setpoint alpha)
+        (rs485-write (str-from-n (* i-steps dt) (str-merge rs485-id  " %2.3f\n")))  
         (update-duty-cycle 0 i-steps d-dc)
         (set-duty setpoint)
     )
@@ -113,7 +115,7 @@
 (defun cmd-speed (args) 
     (progn 
         (set-omega (first args) (first (rest args)))
-        (rs485-write (str-from-n (first args) "%2.3f\r\n"))
+        (rs485-write (str-from-n (first args) (str-merge rs485-id  " %2.3f\n")))
 ))
 
 ;; Sets speed gradually to <rpm> in RPM at angular acceleration <alpha> in rad/s2 
@@ -121,66 +123,84 @@
 (defun cmd-rpm (args) 
     (progn 
         (my-set-rpm (first args) (first (rest args)))
-        (rs485-write (str-from-n (first args) "%2.3f\r\n"))
+        (rs485-write (str-from-n (first args) (str-merge rs485-id  " %2.3f\n")))
 ))
 
 ;; Returns current encoder position in degrees
 ;; (cmd-encoder )
 (defun cmd-encoder (args) 
     (progn 
-        (rs485-write (str-from-n (get-encoder) "%2.3f\r\n"))
+        (rs485-write (str-from-n (get-encoder) (str-merge rs485-id  " %2.3f\n")))
 ))
 
 (defun cmd-reset-encoder (args) 
     (progn
         (set-encoder 0)
-        (rs485-write (str-from-n (get-encoder) "%2.3f\r\n"))
+        (rs485-write (str-from-n (get-encoder) (str-merge rs485-id  " %2.3f\n")))
     )
 )
 
 (defun cmd-temp-motor (args)
-    (rs485-write (str-from-n (get-temp-mot) "%2.3f\r\n"))
+    (rs485-write (str-from-n (get-temp-mot) (str-merge rs485-id  " %2.3f\n")))
 )
 
 (defun cmd-temp-mosfet (args)
-    (rs485-write (str-from-n (get-temp-fet) "%2.3f\r\n"))
+    (rs485-write (str-from-n (get-temp-fet) (str-merge rs485-id  " %2.3f\n")))
 )
 
 (defun cmd-temp (args)
     (progn 
-        (rs485-write (str-merge (str-from-n (get-temp-mot) "%2.3f") "," (str-from-n (get-temp-fet) "%2.3f\r\n") ))
+        (rs485-write (str-merge (str-from-n (get-temp-mot) "0 %2.3f") "," (str-from-n (get-temp-fet) " %2.3f\n") ))
     )
 )
 
-(define rs485-id 0)
+(define rs485-id "0")
 
 (defun process (buffer) 
-    (let (  (tokens (str-split buffer " ")) 
-            (id  (str-to-i (first tokens)))
-            (cmd (str-to-lower (first (rest tokens)))) 
-            (args (map read (rest (rest tokens))))
+    (progn (print "buffer in process:" buffer)
+        (let (  (tokens (str-split buffer " ")) )
+        (progn (print "tokens:" tokens)
+        (if (> (length tokens) 1) 
+            (let (
+                    (id  (first tokens))
+                    (cmd  (first (rest tokens)))
+                    (args (rest (rest tokens)))
+                  )
+                    (progn (print tokens id cmd args)
+                            (if (= 0 (str-cmp id rs485-id))
+                                (cond
+                                    ((= 0 (str-cmp cmd "speed")) (cmd-speed args))
+                                    ((= 0 (str-cmp cmd "rpm")) (cmd-rpm args))
+                                    ((= 0 (str-cmp cmd "duty")) (cmd-duty args))
+                                    ((= 0 (str-cmp cmd "d")) (cmd-duty args))
+                                    ((= 0 (str-cmp cmd "encoder")) (cmd-encoder args))
+                                    ((= 0 (str-cmp cmd "e")) (cmd-encoder args))
+                                    ((= 0 (str-cmp cmd "reset_encoder")) (cmd-reset-encoder args))
+                                    ((= 0 (str-cmp cmd "r")) (cmd-reset-encoder args))
+                                    ((= 0 (str-cmp cmd "temp_motor")) (cmd-temp-motor args))
+                                    ((= 0 (str-cmp cmd "temp_mosfet")) (cmd-temp-mosfet args))
+                                    ((= 0 (str-cmp cmd "temp")) (cmd-temp args))
+                                    ((= 0 (str-cmp cmd "t")) (cmd-temp args))
+                                    (t (rs485-write "CMD_NOT_FOUND\n"))
+                                )        
+                                (progn (print "not to me") )
+                            )
+                        )
+                    )
+                    (progn (print "not command") )
+                )    
+            )
         )
-        (if ((= id rs485-id)) 
-            (cond
-                ((= 0 (str-cmp cmd "speed")) (cmd-speed args))
-                ((= 0 (str-cmp cmd "rpm")) (cmd-rpm args))
-                ((= 0 (str-cmp cmd "duty")) (cmd-duty args))
-                ((= 0 (str-cmp cmd "encoder")) (cmd-encoder args))
-                ((= 0 (str-cmp cmd "reset_encoder")) (cmd-reset-encoder args))
-                ((= 0 (str-cmp cmd "temp_motor")) (cmd-temp-motor args))
-                ((= 0 (str-cmp cmd "temp_mosfet")) (cmd-temp-mosfet args))
-                ((= 0 (str-cmp cmd "temp")) (cmd-temp args))
-                (t (rs485-write "CMD_NOT_FOUND\r\n"))
-            ) 
-)
-        )
+    )
 )
 
 (defun commands-handler () 
     (loopwhile t
         (progn
-            (uart-read-until uart-buf 30 0 13) ; 13 is the return key
-            (bufclear uart-buf 0 (- (str-len uart-buf) 1) ) ; remove return key
+            (uart-read-until uart-buf 100 0 10) ; 10 is the \n
+            (print "buffer pre-clr" uart-buf)
+;            (bufclear uart-buf 0 (- (str-len uart-buf) 1) ) ; remove newline
+            (print "buffer to process" uart-buf)
             (process uart-buf)
         )
     )

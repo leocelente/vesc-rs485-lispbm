@@ -26,12 +26,18 @@
 ;; Transmits via RS485 UART with Hardware Control Flow (~RE/DE)
 ;; https://electronics.stackexchange.com/questions/153500/correctly-using-re-and-de-with-rs485
 (defun rs485-write (buffer) 
-    (progn 
+    (let ((buffer-trimmed (array-create (str-len buffer)))) 
+        (progn 
+        
         (gpio-write 'pin-rs485re 1) ; we are not receveing (~Recv Enable HIGH)
         (gpio-write 'pin-rs485de 1) ; we are transmitting (Driver Enable HIGH)
-        (uart-write buffer)
+        (print "LEN:" (buflen buffer))
+        
+        (bufcpy buffer-trimmed 0 buffer 0 (str-len buffer))
+        (uart-write buffer-trimmed)
 
-        (yield (* uart-byte-time (- (buflen buffer) 1))) 
+        
+        (yield (* uart-byte-time (- (buflen buffer-trimmed) 1))) 
         ;; The delay is recommended in case the UART shift register is not done, 
         ;;  even if the UART buffer is clear. As the latter is a commonly used
         ;;  to define the end of transmision.
@@ -42,6 +48,9 @@
         
         (gpio-write 'pin-rs485de 0) ; we are not transmitting (Driver Enable LOW)
         (gpio-write 'pin-rs485re 0) ; we are receveing (~Recv Enable LOW)
+        
+        )
+        
     )
 )
 
@@ -95,7 +104,7 @@
         (delta-dc (- setpoint current-dc))
         (delta-t (abs (/ delta-dc alpha)))
         (n-steps (/ delta-t dt))
-        (d-dc (/ delta-dc n-steps))
+        (d-dc (/ delta-dc (+ n-steps 1)))
         (i-steps (to-i n-steps))
     ) 
     (progn
@@ -130,11 +139,13 @@
 ;; (cmd-encoder )
 (defun cmd-encoder (args) 
     (progn 
+        (print "cmd: encoder")
         (rs485-write (str-from-n (get-encoder) (str-merge rs485-id  " %2.3f\n")))
 ))
 
 (defun cmd-reset-encoder (args) 
     (progn
+        (print "cmd: reset_encoder")
         (set-encoder 0)
         (rs485-write (str-from-n (get-encoder) (str-merge rs485-id  " %2.3f\n")))
     )
@@ -150,11 +161,12 @@
 
 (defun cmd-temp (args)
     (progn 
-        (rs485-write (str-merge (str-from-n (get-temp-mot) "0 %2.3f") "," (str-from-n (get-temp-fet) " %2.3f\n") ))
+        (print "cmd: temp")
+        (rs485-write (str-merge (str-from-n (get-temp-mot) (str-merge rs485-id " %2.3f")) "," (str-from-n (get-temp-fet) " %2.3f\n") ))
     )
 )
 
-(define rs485-id "0")
+(define rs485-id "1")
 
 (defun process (buffer) 
     (progn (print "buffer in process:" buffer)
@@ -181,8 +193,8 @@
                                     ((= 0 (str-cmp cmd "temp_mosfet")) (cmd-temp-mosfet args))
                                     ((= 0 (str-cmp cmd "temp")) (cmd-temp args))
                                     ((= 0 (str-cmp cmd "t")) (cmd-temp args))
-                                    (t (rs485-write "CMD_NOT_FOUND\n"))
-                                )        
+                                    (t (rs485-write (str-merge rs485-id " CMD_NOT_FOUND\n")))
+                                )
                                 (progn (print "not to me") )
                             )
                         )
@@ -199,7 +211,7 @@
         (progn
             (uart-read-until uart-buf 100 0 10) ; 10 is the \n
             (print "buffer pre-clr" uart-buf)
-;            (bufclear uart-buf 0 (- (str-len uart-buf) 1) ) ; remove newline
+            (bufclear uart-buf 0 (- (str-len uart-buf) 1) ) ; remove newline
             (print "buffer to process" uart-buf)
             (process uart-buf)
         )
@@ -223,3 +235,4 @@
 (yield 10000) ; wait 10ms
 (set-duty 0)
 (run)
+    

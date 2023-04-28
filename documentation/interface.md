@@ -8,16 +8,16 @@ This interface is intended, and only compatible with, the custom 410_LACEP revis
 The interface consists of an RS485 physical layer, using one differential pair. The data is transferred on a half-duplex serial UART running at **115200 baud**. 
 
 ### Command Structure
-Each command consists of a *command_name* and an optional sequence of *args* separated by *whitespace* and terminated with a *newline* (\\n). 
+Each command consists of a *command_name* and an optional sequence of *args* separated by *whitespace* and **wrapped with two *newline*** (\\n...\\n). 
 
 ```
-<command_name> <args>\n
+\n<command_name> <args>\n
 ```
-All commands return a *response* terminated by a carriage-return and newline (\\r\\n).
+All commands return a *response* terminated by a carriage-return and a single newline (\\n).
 ```
 <response>\r\n
 ```
-Upper/lower case is irrelevant. In case a command (\\n), does not match any on the list a error *response* will be returned `CMD_NOT_FOUND`.
+In case a command does not match any on the list a error *response* will be returned `CMD_NOT_FOUND`.
 
 ### Limitations
 Preliminary tests have encountered problems running the board on the extremes of the possible range of control.

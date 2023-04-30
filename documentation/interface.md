@@ -17,6 +17,8 @@ All commands return a *response* terminated by a carriage-return and a single ne
 ```
 <response>\r\n
 ```
+Some *command_names* are available in short form (the first letter).
+
 In case a command does not match any on the list a error *response* will be returned `CMD_NOT_FOUND`.
 
 ### Limitations
@@ -32,6 +34,7 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
 #### Set Duty Cycle with Ramp 
 
 - Usage: `duty <setpoint> <rate>`
+- Short form: `d` 
 - Ramps up/down the motor duty cycle at rate %/s with a timestep of 5 milliseconds.
 - Response: Expected time to setpoint in seconds
 - Example: `duty 0.3 0.6` returns `0.500`
@@ -40,12 +43,14 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
 #### Read Encoder Count
 
 - Usage: `encoder`
+- Short form: `e`
 - Gets current encoder position in degrees
 - Response: `216.40`
 
 #### Reset Encoder Count
 
 - Usage: `reset_encoder`
+- Short form: `r`
 - Rests current encoder count.
 - Response: `0`
 
@@ -53,6 +58,7 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
 #### Read Temperature Sensors
 
 - Usage: `temp`
+- Short form: `t`
 - Returns current temperature of motor and MOSFET in degree Celsius, separated by a comma.
 
 #### Read Motor Temperature Sensor

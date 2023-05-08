@@ -1,4 +1,4 @@
-(define rs485-id "0")
+(define rs485-id "1")
 (define rs485-broadcast-id "*")
 
 (uart-start 115200)
@@ -10,7 +10,6 @@
 (define dt 0.010)
 ;; Microsecond delay between steps
 (define delay (to-i (* dt 1000000)))
-
 
 (defun parse (buffer)
     (let (  (tokens    (str-split buffer " "))  )
@@ -83,11 +82,11 @@
                     (up-down (sign distance))
                 )
                 (progn
-                    (if (> (abs distance) 0.01) ; set threshold to avoid oscillating or set to 0
+                    (if (> (abs distance) 0.001) ; set threshold to avoid oscillating or set to 0
                         (progn 
                             (setvar 'virtual (+ virtual (* rate up-down)))
-                            (set-duty (duty-cycle-mask virtual))
-                            (print "UPDATE DUTY:" virtual (duty-cycle-mask virtual) "-")
+                            (duty-cycle-mask virtual)
+                            (print "RAMP:" virtual "-")
                         )
                     )
                     (yield delay)    
@@ -157,6 +156,5 @@
         )        
     )
 )
-
 
 (thread-monitor)

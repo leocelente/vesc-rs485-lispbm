@@ -67,9 +67,10 @@
 
 (defun duty-cycle-mask (desired) 
     (cond
-        ((< (abs desired) 0.1) 0.0)
-        ((> (abs desired) 0.8) (* 0.8 (sign desired)))
-        (t desired)
+        ((< (abs desired) 0.005) (progn (print "Full Stop") (set-duty 0.0))) ; stop 
+        ((< (abs desired) 0.1) (set-current 0.0))
+        ((> (abs desired) 0.85) (set-duty (* 0.85 (sign desired))))
+        (t (set-duty desired))
     )
 )
 

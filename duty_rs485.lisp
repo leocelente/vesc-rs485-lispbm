@@ -102,6 +102,8 @@
 (defun cmd-temp-motor (args) (float-to-str (get-temp-mot)))
 (defun cmd-temp (args) (str-merge (cmd-temp-motor) "," (cmd-temp-mosfet)))
 (defun cmd-set-rate (args) (progn (define rate (str-to-f (first args))) (float-to-str rate)))
+(defun cmd-set-delay (args)(progn (define dt (str-to-f (first args))) (define delay (to-i (* dt 1000000)))
+ (float-to-str rate)))
 
 (defun calculate-time (setpoint)
     (let ( (delta-duty (- setpoint (get-duty))) 

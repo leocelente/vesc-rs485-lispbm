@@ -92,26 +92,24 @@ network = MotorNetwork(args.port)
 motors = [0, 1]
 [network.add_motor(i) for i in motors]
 
-network.send(BROADCAST, Command.rate(0.05))
+network.send(BROADCAST, Command.rate(0.005)) # default
 start_time = time()
 while args.forever or args.count > 0:
     if args.duty:
         print("--- RAMP UP ---")
-        for duty in np.linspace(0.0, 1.0, 9):
+        for duty in np.linspace(0.0, 1.0, 41):
             [network.send(i, Command.duty(duty)) for i in motors]
             sleep(0.100)
         sleep(1)
-
+        
         print("--- RAMP DOWN ---")
-        [network.send(i, Command.rate(0.01)) for i in motors]
-
-        for duty in np.linspace(1.0, -1.0, 2*9):
+        for duty in np.linspace(1.0, -1.0, 2*41):
             [network.send(i, Command.duty(duty)) for i in motors]
             sleep(0.100)
         sleep(1)
 
         print("--- BROADCAST STOP ---")
-        for duty in np.linspace(-1.0, 0.0, 50):
+        for duty in np.linspace(-1.0, 0.0, 41):
             network.send(BROADCAST, Command.duty(duty))
             sleep(0.100)
         sleep(1)
@@ -132,7 +130,7 @@ while args.forever or args.count > 0:
             m0 = network.send(0, Command.encoder())
             m1 = network.send(1, Command.encoder())
             angle.append([float(m0), float(m1)])
-            
+
         network.send(BROADCAST, Command.duty(0.0))
             
 

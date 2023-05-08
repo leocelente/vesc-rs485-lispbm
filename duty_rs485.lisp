@@ -62,8 +62,8 @@
     )
 )
 
-(define setpoint 0.0)
-(define rate 0.02)
+(define setpoint 0.01)
+(define rate 0.005)
 
 (defun duty-cycle-mask (desired) 
     (cond

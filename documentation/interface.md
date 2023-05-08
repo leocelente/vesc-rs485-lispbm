@@ -105,4 +105,5 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
 
 ## Duty Cycle Thread Logic
 The interface architecture is divided in two threads. One responsible to ingest, parse and respond to commands (*Commands Thread*) and another to update the motor duty cycle (*Duty Cycle Thread*). The Duty Cycle Thread is the most important and its general logic is displayed in the following flowchart diagram:
+
 ![flowchart](assets/ControllerLogic.drawio.png)

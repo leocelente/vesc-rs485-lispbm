@@ -49,26 +49,33 @@ The script also depends on `numpy`
 Preliminary tests have encountered problems running the board on the extremes of the possible range of control.
 The following figure is the plot of a "VESC Motor Experiment" sweeping the duty cycle from 0% to 100%.
 
-![range-test](assets/ensaio_dutycycle.png)
+![range-test](https://imgur.com/PIUaRSq.png)
 
-The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2% every 3 seconds. So the start of the usable band is at around 24s, divide by 3, so 8 steps totalling 16%. The upper limit is also identified at 84%. **So the usable duty cycle range is from 16%-84%**. The interface limits the actual duty cycle applied to the motor to the interval 10%-80% (in forward and reverse). 
+The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2% every 3 seconds. So the start of the usable band is at around 24s, divide by 3, so 8 steps totalling 16%. The upper limit is also identified at 84%. **So the usable duty cycle range is from 16%-84%**. The interface limits the actual duty cycle applied to the motor to the interval 10%-85% (in forward and reverse). 
 
 ## Command List
 ### Duty Cycle Control
-#### Set Duty Cycle with Ramp 
+#### Set Duty Cycle Target 
 
 - Usage: `<id> duty <setpoint>`
 - Short form: `d` 
-- Sets the target duty cycle to *setpoint*. The controller will then close the distance by adding the value of `rate` every 10ms. 
+- Sets the target duty cycle to *setpoint*. The controller will then close the distance by adding the value of *delta* every *interval*. 
 - Response: Expected time to *setpoint* in seconds
 - Example: `0 duty 0.3`
 
-#### Set rate 
-- Usage: `<id> rate <value>`
-- Sets delta (in %) that the duty cycle will jump every 10ms
-- Note: Setting the rate to >0.10 will cause oscillations when passing through the duty cycle deadzone (+/- 10%).
-- Example: `0 rate 0.02`
+#### Set Ramp Step
+- Usage: `<id> delta <value>`
+- Sets delta (in %) that the duty cycle will jump every *interval*
+- Note: Setting the delta to >0.10 will cause oscillations when passing through the duty cycle deadzone (+/- 10%). Ideally the delta should be small to keep the ramp smooth. The default delta is 0.5%.
+- Example: `0 delta 0.0025`
 
+#### Set Ramp Interval 
+- Usage: `<id> interval <value>`
+- Short form: `i`
+- Sets time interval between updates to the duty cycle in seconds. 
+- The default interval is 10ms.
+- Example: `0 delta 0.005`
+  
 ### Encoder
 #### Read Encoder Count
 
@@ -104,6 +111,4 @@ The x-axis is correlated with the duty cycle. The duty cycle is incremented by 2
 
 
 ## Duty Cycle Thread Logic
-The interface architecture is divided in two threads. One responsible to ingest, parse and respond to commands (*Commands Thread*) and another to update the motor duty cycle (*Duty Cycle Thread*). The Duty Cycle Thread is the most important and its general logic is displayed in the following flowchart diagram:
-
-![flowchart](assets/ControllerLogic.drawio.png)
+The interface architecture is divided in two threads. One responsible to ingest, parse and respond to commands (*Commands Thread*) and another to update the motor duty cycle (*Duty Cycle Thread*). 
